@@ -1,122 +1,39 @@
 <!DOCTYPE html>
 <html lang="en-us">
   <head>
-    <meta charset="utf-8" />
-    <meta
-      http-equiv="Content-Type"
-      content="text/html; charset=utf-8"
-    />
-    <meta
-      name="viewport"
-      content="width=device-width, height=device-height, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"
-    />
-
-    <title>Unity WebGL Player | My project</title>
-
-    <style>
-      :root {
-        color-scheme: light;
-        background: #fff;
-      }
-
-      * {
-        box-sizing: border-box;
-      }
-
-      html,
-      body {
-        width: 100%;
-        height: 100%;
-        margin: 0;
-        padding: 0;
-        overflow: hidden;
-        background: #fff;
-      }
-
-      body {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        overscroll-behavior: none;
-      }
-
-      /*
-       * 始终保持9:16：
-       * - 屏幕较宽时，以浏览器高度为准，左右留白边。
-       * - 屏幕较窄时，以浏览器宽度为准，上下留白边。
-       */
-      #unity-container {
-        position: relative;
-        width: min(100vw, calc(100vh * 9 / 16));
-        height: min(100vh, calc(100vw * 16 / 9));
-        overflow: hidden;
-        background: #231f20;
-      }
-
-      /* 支持动态视口高度，适配手机浏览器地址栏展开和收起。 */
-      @supports (height: 100dvh) {
-        #unity-container {
-          width: min(100vw, calc(100dvh * 9 / 16));
-          height: min(100dvh, calc(100vw * 16 / 9));
-        }
-      }
-
-      #unity-canvas {
-        display: block;
-        width: 100%;
-        height: 100%;
-        margin: 0;
-        padding: 0;
-        border: 0;
-        outline: none;
-        background: #231f20;
-        touch-action: none;
-        -webkit-user-select: none;
-        user-select: none;
-      }
-    </style>
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>Unity WebGL Player | TallManRun</title>
   </head>
-
-  <body>
-    <div id="unity-container">
-      <!-- 内部渲染分辨率固定为1080×1920，CSS只负责等比缩放显示。 -->
-      <canvas
-        id="unity-canvas"
-        width="1080"
-        height="1920"
-        tabindex="0"
-        aria-label="Unity WebGL Game"
-      ></canvas>
-    </div>
-
-    <script src="Build/RunTallMan.loader.js"></script>
+  <body style="text-align: center; padding: 0; border: 0; margin: 0;">
+    <canvas id="unity-canvas" width=768 height=1366 tabindex="-1" style="width: 768px; height: 1366px; background: #231F20"></canvas>
+    <script src="Build/911.loader.js"></script>
     <script>
-      const canvas = document.querySelector("#unity-canvas");
+      if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
+        // Mobile device style: fill the whole browser client area with the game canvas:
+        var meta = document.createElement('meta');
+        meta.name = 'viewport';
+        meta.content = 'width=device-width, height=device-height, initial-scale=1.0, user-scalable=no, shrink-to-fit=yes';
+        document.getElementsByTagName('head')[0].appendChild(meta);
 
-      // 保持Unity内部渲染尺寸为1080×1920。
-      canvas.width = 1080;
-      canvas.height = 1920;
+        var canvas = document.querySelector("#unity-canvas");
+        canvas.style.width = "100%";
+        canvas.style.height = "100%";
+        canvas.style.position = "fixed";
 
-      // 点击或触摸游戏后让Canvas获得焦点，保证键盘输入可用。
-      canvas.addEventListener("pointerdown", function () {
-        canvas.focus();
-      });
+        document.body.style.textAlign = "left";
+      }
 
-      createUnityInstance(canvas, {
-        dataUrl: "Build/RunTallMan.data",
-        frameworkUrl: "Build/RunTallMan.framework.js",
-        codeUrl: "Build/RunTallMan.wasm",
+      createUnityInstance(document.querySelector("#unity-canvas"), {
+        dataUrl: "Build/911.data",
+        frameworkUrl: "Build/911.framework.js",
+        codeUrl: "Build/911.wasm",
         streamingAssetsUrl: "StreamingAssets",
         companyName: "DefaultCompany",
-        productName: "My project",
+        productName: "TallManRun",
         productVersion: "0.1.0",
-
-        // false：不让Unity根据CSS显示尺寸修改1080×1920内部渲染尺寸。
-        // 页面缩放只改变显示大小，因此不会拉伸画面比例。
-        matchWebGLToCanvasSize: false,
-      }).catch(function (error) {
-        console.error(error);
-        alert("Unity WebGL加载失败：" + error);
+        // matchWebGLToCanvasSize: false, // Uncomment this to separately control WebGL canvas render size and DOM element size.
+        // devicePixelRatio: 1, // Uncomment this to override low DPI rendering on high DPI displays.
       });
     </script>
   </body>
